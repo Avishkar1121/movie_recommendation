@@ -15,11 +15,14 @@ function App() {
     setRecommendations([]);
 
     try {
-      const response = await fetch("http://127.0.0.1:5000/recommend", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ title: query, language }),
-      });
+      const response = await fetch(
+        "https://movie-recommendation-2-pw6c.onrender.com/recommend",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ title: query, language }),
+        }
+      );
 
       const data = await response.json();
       console.log("API Response:", data);
@@ -140,7 +143,9 @@ function App() {
 
             <h3>{movie.title}</h3>
             <p style={{ fontSize: "14px", color: "#555" }}>{movie.overview}</p>
-            <p style={{ fontSize: "12px", color: "#888" }}>Genres: {movie.genres}</p>
+            <p style={{ fontSize: "12px", color: "#888" }}>
+              Genres: {movie.genres}
+            </p>
             <a
               href={movie.tmdb_link}
               target="_blank"
