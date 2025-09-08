@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
-const [trending, setTrending] = useState([]);
+
 
 
 function StarRating({ rating }) {
@@ -27,7 +27,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 const [suggestions, setSuggestions] = useState([]);
-
+const [trending, setTrending] = useState([]);
 useEffect(() => {
   const fetchTrending = async () => {
     try {
