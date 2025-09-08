@@ -86,6 +86,31 @@ def recommend_movie():
     all_movies = [original_movie] + recommendations
 
     return jsonify({"recommendations": all_movies})
+@app.route("/suggest", methods=["GET"])
+def suggest_movies():
+    query = request.args.get("query", "")
+    if not query:
+        return jsonify([])
+
+    url = f"{TMDB_BASE_URL}/search/movie"
+    my_params = {"api_key": TMDB_API_KEY, "query": query, "language": "en-US"}
+    try:
+        response = requests.get(url, params=my_params).json()
+        results = response.get("results", [])
+        suggestions = [movie["title"] for movie in results[:7]]
+        return jsonify(suggestions)
+    except Exception as e:
+        return jsonify({"error": "Failed to fetch suggestions", "details": str(e)})
+@app.route("/trending", methods=["GET"])
+def trending_movies():
+    language = request.args.get("language", "en")
+    url = f"{TMDB_BASE_URL}/trending/movie/week"
+    params = {"api_key": TMDB_API_KEY, "language": language}
+    response = requests.get(url, params=params).json()
+    
+    results = response.get("results", [])[:10]  # top 10 trending
+    trending = [get_movie_details(movie["id"], language) for movie in results]
+    return jsonify(trending)
 
 # --- Run server ---
 if __name__ == "__main__":

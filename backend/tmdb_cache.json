@@ -600,5 +600,61 @@
         "overview": "",
         "genres": "Comedy",
         "tmdb_link": "https://www.themoviedb.org/movie/14546"
+    },
+    "157336_en": {
+        "title": "Interstellar",
+        "poster": "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+        "overview": "The adventures of a group of explorers who make use of a newly discovered wormhole to surpass the limitations on human space travel and conquer the vast distances involved in an interstellar voyage.",
+        "genres": "Adventure, Drama, Science Fiction",
+        "tmdb_link": "https://www.themoviedb.org/movie/157336"
+    },
+    "644_en": {
+        "title": "A.I. Artificial Intelligence",
+        "poster": "https://image.tmdb.org/t/p/w500/8MZSGX5JORoO72EfuAEcejH5yHn.jpg",
+        "overview": "David, a robotic boy—the first of his kind programmed to love—is adopted as a test case by a Cybertronics employee and his wife. Though he gradually becomes their child, a series of unexpected circumstances make this life impossible for David.",
+        "genres": "Drama, Science Fiction, Adventure",
+        "tmdb_link": "https://www.themoviedb.org/movie/644"
+    },
+    "667_en": {
+        "title": "You Only Live Twice",
+        "poster": "https://image.tmdb.org/t/p/w500/fdRbvRcEXcf2rC4ghLFZzCWPSmB.jpg",
+        "overview": "A mysterious spacecraft captures Russian and American space capsules and brings the two superpowers to the brink of war. James Bond investigates the case in Japan and comes face to face with his archenemy Blofeld.",
+        "genres": "Action, Thriller, Adventure",
+        "tmdb_link": "https://www.themoviedb.org/movie/667"
+    },
+    "670_en": {
+        "title": "Oldboy",
+        "poster": "https://image.tmdb.org/t/p/w500/pWDtjs568ZfOTMbURQBYuT4Qxka.jpg",
+        "overview": "With no clue how he came to be imprisoned, drugged and tortured for 15 years, a desperate man seeks revenge on his captors.",
+        "genres": "Drama, Thriller, Mystery, Action",
+        "tmdb_link": "https://www.themoviedb.org/movie/670"
+    },
+    "679_en": {
+        "title": "Aliens",
+        "poster": "https://image.tmdb.org/t/p/w500/r1x5JGpyqZU8PYhbs4UcrO1Xb6x.jpg",
+        "overview": "Ripley, the sole survivor of the Nostromo's deadly encounter with the monstrous Alien, returns to Earth after drifting through space in hypersleep for 57 years. Although her story is initially met with skepticism, she agrees to accompany a team of Colonial Marines back to LV-426.",
+        "genres": "Action, Thriller, Science Fiction",
+        "tmdb_link": "https://www.themoviedb.org/movie/679"
+    },
+    "686_en": {
+        "title": "Contact",
+        "poster": "https://image.tmdb.org/t/p/w500/bCpMIywuNZeWt3i5UMLEIc0VSwM.jpg",
+        "overview": "A radio astronomer receives the first extraterrestrial radio signal ever picked up on Earth. As the world powers scramble to decipher the message and decide upon a course of action, she must make some difficult decisions between her beliefs, the truth, and reality.",
+        "genres": "Drama, Science Fiction, Mystery",
+        "tmdb_link": "https://www.themoviedb.org/movie/686"
+    },
+    "698_en": {
+        "title": "Moonraker",
+        "poster": "https://image.tmdb.org/t/p/w500/6LrJdXNmu5uHOVALZxVYd44Lva0.jpg",
+        "overview": "After Drax Industries' Moonraker space shuttle is hijacked, secret agent James Bond is assigned to investigate, traveling to California to meet the company's owner, the mysterious Hugo Drax. With the help of scientist Dr. Holly Goodhead, Bond soon uncovers Drax's nefarious plans for humanity, all the while fending off an old nemesis, Jaws, and venturing to Venice, Rio, the Amazon...and even outer space.",
+        "genres": "Action, Adventure, Thriller, Science Fiction",
+        "tmdb_link": "https://www.themoviedb.org/movie/698"
+    },
+    "702_en": {
+        "title": "A Streetcar Named Desire",
+        "poster": "https://image.tmdb.org/t/p/w500/aicdlO5vt7z2ARm279eGzJeYCLQ.jpg",
+        "overview": "A disturbed, aging Southern belle moves in with her sister for solace — but being face-to-face with her brutish brother-in-law accelerates her downward spiral.",
+        "genres": "Drama, Thriller",
+        "tmdb_link": "https://www.themoviedb.org/movie/702"
     }
 }
