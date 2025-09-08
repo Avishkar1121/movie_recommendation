@@ -7,62 +7,70 @@ import os
 app = Flask(__name__)
 CORS(app)
 
-
-TMDB_API_KEY = "3172acaf0608280c74fc67d9324a38a2"  
+TMDB_API_KEY = "3172acaf0608280c74fc67d9324a38a2"
 TMDB_BASE_URL = "https://api.themoviedb.org/3"
 
+# In-memory cache (safer for Render deployments)
+tmdb_cache = {}
 
+# Optional: Load previous cache if exists locally
 CACHE_FILE = "tmdb_cache.json"
 if os.path.exists(CACHE_FILE):
     with open(CACHE_FILE, "r", encoding="utf-8") as f:
         tmdb_cache = json.load(f)
-else:
-    tmdb_cache = {}
-
 
 def get_movie_details(movie_id, language="en"):
     cache_key = f"{movie_id}_{language}"
     if cache_key in tmdb_cache:
         return tmdb_cache[cache_key]
 
-    url = f"{TMDB_BASE_URL}/movie/{movie_id}?api_key={TMDB_API_KEY}&language={language}"
-    response = requests.get(url).json()
+    try:
+        url = f"{TMDB_BASE_URL}/movie/{movie_id}?api_key={TMDB_API_KEY}&language={language}"
+        response = requests.get(url).json()
+        details = {
+            "title": response.get("title", "Unknown"),
+            "poster": f"https://image.tmdb.org/t/p/w500{response['poster_path']}" if response.get("poster_path") else None,
+            "overview": response.get("overview", "No description available."),
+            "genres": ", ".join([g["name"] for g in response.get("genres", [])]) or "N/A",
+            "tmdb_link": f"https://www.themoviedb.org/movie/{movie_id}",
+            "vote_average": response.get("vote_average", 0),
+            "id": movie_id
+        }
+        tmdb_cache[cache_key] = details
 
-    details = {
-        "title": response.get("title", "Unknown"),
-        "poster": f"https://image.tmdb.org/t/p/w500{response['poster_path']}" if response.get("poster_path") else None,
-        "overview": response.get("overview", "No description available."),
-        "genres": ", ".join([g["name"] for g in response.get("genres", [])]) or "N/A",
-        "tmdb_link": f"https://www.themoviedb.org/movie/{movie_id}"
-    }
+        # Save cache to file for local persistence
+        with open(CACHE_FILE, "w", encoding="utf-8") as f:
+            json.dump(tmdb_cache, f, ensure_ascii=False, indent=4)
 
-    tmdb_cache[cache_key] = details
-    with open(CACHE_FILE, "w", encoding="utf-8") as f:
-        json.dump(tmdb_cache, f, ensure_ascii=False, indent=4)
-
-    return details
+        return details
+    except Exception as e:
+        return {"title": "Unknown", "poster": None, "overview": "No description available.", "genres": "N/A", "tmdb_link": "#", "vote_average": 0, "id": movie_id}
 
 def get_similar_movies(movie_id, language="en"):
-    url = f"{TMDB_BASE_URL}/movie/{movie_id}/similar?api_key={TMDB_API_KEY}&language={language}&page=1"
-    response = requests.get(url).json()
-    results = response.get("results", [])[:10]
+    try:
+        url = f"{TMDB_BASE_URL}/movie/{movie_id}/similar?api_key={TMDB_API_KEY}&language={language}&page=1"
+        response = requests.get(url).json()
+        results = response.get("results", [])[:10]
 
-    recommendations = []
-    for movie in results:
-        rec = get_movie_details(movie["id"], language)
-        recommendations.append(rec)
-    return recommendations
+        recommendations = []
+        for movie in results:
+            rec = get_movie_details(movie["id"], language)
+            recommendations.append(rec)
+        return recommendations
+    except Exception:
+        return []
 
-# --- Search movie by title ---
 def search_movie(title, language="en"):
-    url = f"{TMDB_BASE_URL}/search/movie?api_key={TMDB_API_KEY}&query={title}&language={language}"
-    response = requests.get(url).json()
-    results = response.get("results")
-    if results:
-        return results[0]["id"]  # return first match
-    return None
+    try:
+        url = f"{TMDB_BASE_URL}/search/movie?api_key={TMDB_API_KEY}&query={title}&language={language}"
+        response = requests.get(url).json()
+        results = response.get("results")
+        if results:
+            return results[0]["id"]
+        return None
+    except Exception:
+        return None
 
-# --- Flask route ---
 @app.route("/recommend", methods=["POST"])
 def recommend_movie():
     data = request.json
@@ -76,42 +84,44 @@ def recommend_movie():
     if not movie_id:
         return jsonify({"error": "Movie not found"}), 404
 
-    # Fetch original movie details
     original_movie = get_movie_details(movie_id, language)
 
-    # Fetch similar movies
-    recommendations = get_similar_movies(movie_id, language)
+    # Fetch similar movies and remove duplicate of original
+    recommendations = [m for m in get_similar_movies(movie_id, language) if m["id"] != movie_id]
 
-    # Include the original movie at the top
     all_movies = [original_movie] + recommendations
 
     return jsonify({"recommendations": all_movies})
+
 @app.route("/suggest", methods=["GET"])
 def suggest_movies():
     query = request.args.get("query", "")
+    language = request.args.get("language", "en-US")
     if not query:
         return jsonify([])
 
-    url = f"{TMDB_BASE_URL}/search/movie"
-    my_params = {"api_key": TMDB_API_KEY, "query": query, "language": "en-US"}
     try:
-        response = requests.get(url, params=my_params).json()
+        url = f"{TMDB_BASE_URL}/search/movie"
+        params = {"api_key": TMDB_API_KEY, "query": query, "language": language}
+        response = requests.get(url, params=params).json()
         results = response.get("results", [])
         suggestions = [movie["title"] for movie in results[:7]]
         return jsonify(suggestions)
     except Exception as e:
-        return jsonify({"error": "Failed to fetch suggestions", "details": str(e)})
+        return jsonify({"error": "Failed to fetch suggestions", "details": str(e)}), 500
+
 @app.route("/trending", methods=["GET"])
 def trending_movies():
     language = request.args.get("language", "en")
-    url = f"{TMDB_BASE_URL}/trending/movie/week"
-    params = {"api_key": TMDB_API_KEY, "language": language}
-    response = requests.get(url, params=params).json()
-    
-    results = response.get("results", [])[:10]  # top 10 trending
-    trending = [get_movie_details(movie["id"], language) for movie in results]
-    return jsonify(trending)
+    try:
+        url = f"{TMDB_BASE_URL}/trending/movie/week"
+        params = {"api_key": TMDB_API_KEY, "language": language}
+        response = requests.get(url, params=params).json()
+        results = response.get("results", [])[:10]
+        trending = [get_movie_details(movie["id"], language) for movie in results]
+        return jsonify(trending)
+    except Exception as e:
+        return jsonify({"error": "Failed to fetch trending movies", "details": str(e)}), 500
 
-# --- Run server ---
 if __name__ == "__main__":
     app.run(debug=True)

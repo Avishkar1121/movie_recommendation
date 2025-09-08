@@ -1,6 +1,8 @@
 import { useEffect, useState, useRef } from "react";
 import { FaStar } from "react-icons/fa";
 
+const BACKEND_URL = "https://movie1-recommend.onrender.com"; // your live backend URL
+
 function StarRating({ rating }) {
   const stars = Math.round(rating / 2); // Convert TMDB 10-scale to 5 stars
   return (
@@ -38,9 +40,7 @@ function App() {
   useEffect(() => {
     const fetchTrending = async () => {
       try {
-        const response = await fetch(
-          "https://movie-recommendation-2-pw6c.onrender.com/trending?language=en"
-        );
+        const response = await fetch(`${BACKEND_URL}/trending?language=en`);
         const data = await response.json();
         setTrending(data);
       } catch (err) {
@@ -69,9 +69,7 @@ function App() {
     }
 
     try {
-      const response = await fetch(
-        `https://movie-recommendation-2-pw6c.onrender.com/suggest?query=${queryParam}`
-      );
+      const response = await fetch(`${BACKEND_URL}/suggest?query=${queryParam}`);
       if (!response.ok) throw new Error(`Server error: ${response.status}`);
       const data = await response.json();
 
@@ -89,7 +87,7 @@ function App() {
 
   // Click on a movie to add to history
   const handleMovieClick = (movie) => {
-    if (!movie.id) return; // safety check
+    if (!movie.id) return;
     const updatedHistory = [movie, ...userHistory.filter((m) => m.id !== movie.id)].slice(0, 10);
     setUserHistory(updatedHistory);
     localStorage.setItem("userHistory", JSON.stringify(updatedHistory));
@@ -103,14 +101,11 @@ function App() {
     setRecommendations([]);
 
     try {
-      const response = await fetch(
-        "https://movie-recommendation-2-pw6c.onrender.com/recommend",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title: query, language, history: userHistory }),
-        }
-      );
+      const response = await fetch(`${BACKEND_URL}/recommend`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title: query, language, history: userHistory }),
+      });
       const data = await response.json();
       if (data.recommendations) setRecommendations(data.recommendations);
       else setError(data.error || "No recommendations found.");
