@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { FaStar } from "react-icons/fa"
+import { FaStar } from "react-icons/fa";
 const [trending, setTrending] = useState([]);
 
 useEffect(() => {
