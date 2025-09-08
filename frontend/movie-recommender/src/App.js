@@ -6,7 +6,7 @@ useEffect(() => {
   const fetchTrending = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/trending?language=en"
+        "https://movie-recommendation-2-pw6c.onrender.com/trending?language=en"
       );
       const data = await response.json();
       setTrending(data);
@@ -44,7 +44,7 @@ useEffect(() => {
   const fetchTrending = async () => {
     try {
       const response = await fetch(
-        "http://localhost:5000/trending?language=en"
+        "https://movie-recommendation-2-pw6c.onrender.com/trending?language=en"
       );
       const data = await response.json();
       setTrending(data);
