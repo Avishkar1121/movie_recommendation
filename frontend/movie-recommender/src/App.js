@@ -2,20 +2,7 @@ import { useEffect, useState } from "react";
 import { FaStar } from "react-icons/fa";
 const [trending, setTrending] = useState([]);
 
-useEffect(() => {
-  const fetchTrending = async () => {
-    try {
-      const response = await fetch(
-        "https://movie-recommendation-2-pw6c.onrender.com/trending?language=en"
-      );
-      const data = await response.json();
-      setTrending(data);
-    } catch (err) {
-      console.error("Error fetching trending movies:", err);
-    }
-  };
-  fetchTrending();
-}, []);
+
 function StarRating({ rating }) {
   const stars = Math.round(rating / 2); // Convert TMDB 10-scale to 5 stars
   return (
@@ -40,6 +27,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 const [suggestions, setSuggestions] = useState([]);
+
 useEffect(() => {
   const fetchTrending = async () => {
     try {
@@ -86,7 +74,7 @@ const handleMovieClick = (movie) => {
 };
 
   try {
-    const response = await fetch(`https://movie-recommendation-2-pw6c.onrender.com/suggest?query=${value}`);
+    const response = await fetch(`https://movie-recommendation-2-pw6c.onrender.com/suggest?query=${query}`);
     if (!response.ok) {
       throw new Error(`Server error: ${response.status}`);
     }
@@ -119,10 +107,10 @@ const handleMovieClick = (movie) => {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ title: query, language }),
+          body: JSON.stringify({ title: query, language , history: userHistory}),
         }
       );
-body: JSON.stringify({ title: query, language, history: userHistory })
+
       const data = await response.json();
       console.log("API Response:", data);
 
@@ -226,6 +214,7 @@ body: JSON.stringify({ title: query, language, history: userHistory })
               boxShadow: "0px 2px 5px rgba(0,0,0,0.1)",
               backgroundColor: "#fff",
             }}
+            onClick={() => handleMovieClick(movie)}
           >
             
             {movie.poster ? (
@@ -298,7 +287,9 @@ body: JSON.stringify({ title: query, language, history: userHistory })
             padding: "10px",
             background: "#fff",
             flexShrink: 0,
+            
           }}
+          onClick={() => handleMovieClick(movie)}
         >
           {movie.poster ? (
             <img
