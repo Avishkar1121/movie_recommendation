@@ -256,6 +256,15 @@ function App() {
           {/* Movie Info */}
           <h4 style={{ fontSize: "16px", margin: "5px 0" }}>{movie.title}</h4>
           <StarRating rating={movie.vote_average} />
+          <a
+  href={movie.tmdb_link}
+  target="_blank"
+  rel="noreferrer"
+  style={{ color: "#007bff", textDecoration: "none", fontSize: "12px" }}
+>
+  View on TMDb
+</a>
+
           <p style={{ fontSize: "12px", color: "#888", marginTop: "5px" }}>
             Genres: {movie.genres}
           </p>
